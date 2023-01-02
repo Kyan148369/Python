@@ -1,7 +1,17 @@
-import Linear_Algebra_Library\LinearAlgebra\Determinant
+from Input_Matrix import *
 
 
-def transpose(squarematrix):
-    matrixtranpose = squarematrix[::2]
+def transpose(matrix):
+    matrix_transpose = []
+    for i in range(len(matrix[0])):
+        row = []
+        for j in range(len(matrix)):
+            row.append(matrix[j][i])
+        matrix_transpose.append(row)
+    print(matrix_transpose)
 
-transpose(squarematrix)
+# calling the func
+
+
+matrix = inputmatrix(rows, cols)
+transpose(matrix)
