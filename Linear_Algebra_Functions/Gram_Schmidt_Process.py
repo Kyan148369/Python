@@ -1,46 +1,43 @@
-from Input_Matrix import *
-from Transpose import transpose
 
 # Pseudocode will prolly help to transfer it in code
 # basically u1 = v1
 # u2 = v2 - <v2,u1>/u1^2 * u1(make dot product function for this probably)
 # u3 = v3 - <v3,u1>/u1^2* u1 - <v3,u2>/u^2
+# taken test matrix will add input matrix soon
 
 
-def Gram_Schmidt_Process(matrix):
-    if rows != cols:
+def gram_schmidt(matrix):
+    Gram_schmidt_matrix = []
+    # this loop iterates through each indiviual vector
+    for v in matrix:
+        w = v[:]  # Create a copy of the current vector
+        # this loop basically makes that vector orthogonal to the ones present in the GSP matrix
+        for b in Gram_schmidt_matrix:
+            proj = 0  # initialize projection
+            for i in range(len(v)):
+                proj += v[i] * b[i]  # Projection of v onto b
+            proj /= sum(b[i] * b[i] for i in range(len(b)))
 
-        if rows == 1:
-            return matrix
+            for i in range(len(v)):
+                w[i] -= proj * b[i]  # Subtract the projection of v onto b from v
+        # Calculate the norm of the vector
+        norm = sum(i ** 2 for i in w) ** 0.5
+        # computer arithmetic isnt perfect so due to that floating point errors can add up
+        # leading to us getting another vector which is in fact a zero vector
+        if norm > 1e-10:
+            for i in range(len(w)):
+                w[i] /= norm  # Normalize the vector
+            # Append the normalized vector to the Gram_schmidt_matrix
+            Gram_schmidt_matrix.append(w)
+        # appending zero vector to the remaining rows which werent linearly independent
         else:
-            Ortho_matrix = []
-            matrixT = transpose(matrix)
-            for i in range(0, cols):
-                Ortho_rowmatrix = []
-                for j in range(0, cols):
-                    t = matrix[i]
-                    for k in range(0, i):
-                        v += v(i) - ((matrix[j][i] * Ortho_matrix[k][i]) /
-                                     Ortho_matrix[j][i]*Ortho_matrix[j][i]) * matrix[i][j]
-                    Ortho_rowmatrix.append(v)
-                Ortho_matrix.append(Ortho_rowmatrix)
-    # Now to normalize each column vector of an orthogonal basis
-                GSP_Matrix = []
-                a = 0
-                b = 0
-            for i in range(0, cols):
-                GSP_rowmatrix = []
-                for j in range(0, rows):
-                    b = (Ortho_matrix[j][i] / a)
-                    for k in range(0, rows):
-                        a += (Ortho_matrix[k][i]) ^ 2
-                GSP_rowmatrix.append(b)
-            GSP_Matrix.append(GSP_rowmatrix)
-        return GSP_Matrix
+            for i in range(len(w)):
+                w[i] = 0
+            Gram_schmidt_matrix.append(w)
 
-    else:
-        print('Cant apply Gram Schmidt Process for non square matricfes')
+    return Gram_schmidt_matrix
 
 
-matrix = inputmatrix(rows, cols)
-Gram_Schmidt_Process(matrix)
+matrix = [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
+orthonormal_basis = gram_schmidt(matrix)
+print(orthonormal_basis)
